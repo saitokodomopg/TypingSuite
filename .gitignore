@@ -1,0 +1,36 @@
+# 個人設定
+.claude/settings.local.json
+
+# 秘密情報
+.env
+.env.*
+!.env.example
+
+# 依存関係
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ビルド成果物
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# ログ・一時ファイル
+*.log
+npm-debug.log*
+.cache/
+.tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# エディタ
+.vscode/*
+!.vscode/extensions.json
+.idea/
