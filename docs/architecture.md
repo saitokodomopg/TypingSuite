@@ -163,6 +163,25 @@ Supabase (PostgreSQL) に保存する。接続情報は `.env`（git 管理外�
 | Supabase | DB・認証 | あり（PostgreSQL + 自前API）。ただし移行コストは大きい |
 | Cloudflare Pages | 静的ファイル配信・自動デプロイ | あり（Vercel 等へ差し替え可能。ビルド成果物を置くだけなので移行は軽い） |
 
+## 外部サービスの役割
+
+### Cloudflare Pages(クラウドフレア・ペイジズ)
+
+- **役割**: ビルド済み静的ファイル(HTML/JS/CSS)の配信専用。アプリケーションロジックは一切実行しない(サーバーレス関数も使わない)
+- **デプロイされるもの**: `npm run build` の成果物のみ。ソースコードやサーバー処理は含まれない
+- **トリガー**: `main` ブランチへの `git push` で自動ビルド・公開。他ブランチへの push はプレビュー URL を発行(担当者が自分の変更を見せられる)
+- **関与するタイミング**: ユーザーが最初にページを開く瞬間だけ。以降のキー入力・保存・記録表示のやり取りには一切登場しない(「練習時のデータフロー」参照)
+
+### Supabase(スーパベイス)
+
+- **役割**: DB(PostgreSQL)・認証(Auth)・行レベルセキュリティ(RLS)をまとめて提供する BaaS。自前のAPIサーバーを持たない構成の要
+- **「デプロイ」されるもの**: コードではなく**設定**。具体的には以下の3つで、いずれも git push とは連動せず、Supabase 側で直接変更する運用
+  - テーブルスキーマ(`students` / `sessions` / `key_misses` / `exams` / `exam_results` / `task_texts`)
+  - RLS ポリシー(生徒は自分の行のみ、先生は全行アクセス可)
+  - Auth 設定(生徒はダミーメール形式、先生は通常メール)
+- **接続方法**: ブラウザから Supabase JS SDK 経由で直接呼び出す(`lib/` が窓口)。サーバーを中継しない
+- **運用上の注意**: 無料枠は非アクティブ期間が続くと一時停止される(「制約・前提」に既出)。スキーマ変更をコードで管理する仕組み(マイグレーション)は現時点で未整備 — 必要なら `docs/backlog.md` へ
+
 ## 制約・前提
 
 - **オンライン必須。** 通信が切れた回は記録されない（concept.md の決定に従う）
@@ -178,6 +197,134 @@ Supabase (PostgreSQL) に保存する。接続情報は `.env`（git 管理外�
   契約済みだが、使っても使わなくても費用は変わらない。
   手動アップロードが必要になる分だけ不利なため、判断材料にしなかった
 - 記録は削除しない。卒業生の分も残す
+
+## 関連図
+
+構造を俯瞰するための図。詳細な決定理由は各セクションの本文を参照。
+
+### モジュール依存関係
+
+`core/` は誰にも依存されて構わないが、`core/` 自身は `tasks/` `games/` `features/` を参照しない。
+この一方通行を守ることで、課題やゲームを増やしても土台が壊れない（「拡張の仕組み」参照）。
+
+```mermaid
+graph TD
+    core["core/ 土台<br/>engine・types・registry"]
+    tasks["tasks/ 課題<br/>touch-type・english-word・romaji"]
+    games["games/ ゲーム"]
+    features["features/ 画面<br/>practice・records・exam・admin"]
+    shared["shared/ 共通部品"]
+    lib["lib/ Supabaseクライアント"]
+
+    core --> tasks
+    core --> games
+    features --> core
+    features --> tasks
+    features --> games
+    features --> shared
+    features --> lib
+    lib --> supabase[(Supabase)]
+```
+
+### 練習時のデータフロー
+
+生徒が1問打つたびに `core/engine` が判定し、結果は `sessions` / `key_misses` として
+Supabase に保存される。保存後の訂正機能はない（「データ設計」参照）。
+
+```mermaid
+sequenceDiagram
+    participant 生徒 as 生徒(ブラウザ)
+    participant Engine as core/engine
+    participant Lib as lib/(Supabaseクライアント)
+    participant DB as Supabase(PostgreSQL)
+
+    生徒->>Engine: キー入力
+    Engine->>Engine: 打鍵判定・スコア計算
+    Engine->>Lib: 結果を渡す
+    Lib->>DB: sessions / key_misses に保存
+    DB-->>DB: RLS で本人の行のみ書き込み許可
+    DB-->>生徒: 記録画面へ反映
+```
+
+### データモデル
+
+`sessions` を軸に、ミス傾向（`key_misses`）と検定結果（`exam_results`）がぶら下がる構造。
+`task_texts` は先生が管理する出題元。
+
+```mermaid
+erDiagram
+    students ||--o{ sessions : "記録する"
+    students ||--o{ exam_results : "受験する"
+    sessions ||--o{ key_misses : "ミスを含む"
+    exams ||--o{ exam_results : "結果を持つ"
+    task_texts ||--o{ sessions : "出題される"
+
+    students {
+        uuid id
+        string class
+        bool graduated
+    }
+    sessions {
+        uuid id
+        uuid student_id
+        float speed
+        float accuracy
+        int duration
+    }
+    key_misses {
+        uuid id
+        uuid session_id
+        string key
+        int count
+    }
+    exams {
+        uuid id
+        datetime held_at
+        string level
+    }
+    exam_results {
+        uuid id
+        uuid exam_id
+        uuid student_id
+        bool passed
+    }
+    task_texts {
+        uuid id
+        text content
+    }
+```
+
+### 認証フロー
+
+生徒と先生でログイン方法が異なるが、どちらも Supabase Auth 1本に乗せる。
+生徒 ID はダミーメールに変換することで、自前の認証実装を避けている（「認証の方針」参照）。
+
+```mermaid
+flowchart TD
+    start{ログイン画面}
+    start -->|生徒| sid[生徒ID + 4桁PW を入力]
+    start -->|先生| tmail[メールアドレス + PW を入力]
+
+    sid --> convert["ID を &lt;生徒ID&gt;@typingsuite.invalid に変換"]
+    convert --> auth[Supabase Auth]
+    tmail --> auth
+
+    auth --> rls[RLS 適用]
+    rls -->|生徒| ownRows[自分の記録のみ閲覧可]
+    rls -->|先生| allRows[全生徒の記録を閲覧可]
+```
+
+### デプロイフロー
+
+手動アップロードを介さず、`main` への push だけで公開まで完結する（「実行環境」参照）。
+
+```mermaid
+flowchart LR
+    dev[開発者] -->|git push| main[main ブランチ]
+    main --> build[Cloudflare Pages<br/>npm run build]
+    build --> publish[静的ファイル公開]
+    dev -->|他ブランチへ push| preview[プレビューURL発行]
+```
 
 ---
 
