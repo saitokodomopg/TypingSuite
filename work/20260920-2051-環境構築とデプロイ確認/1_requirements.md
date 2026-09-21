@@ -20,12 +20,14 @@
 
 ## 受け入れ条件
 
-- [ ] `npm run dev` でタイトル画面が表示される
-- [ ] `npm run build` / `npm run test` / `npm run typecheck` / `npm run lint` がすべて通る
-- [ ] Cloudflare Pages の公開 URL でタイトル画面が見られる
-- [ ] Supabase クライアントが初期化でき、簡単な呼び出し（例：空のテーブルへの SELECT）が
+- [x] `npm run dev` でタイトル画面が表示される
+- [x] `npm run build` / `npm run test` / `npm run typecheck` / `npm run lint` がすべて通る
+- [x] Cloudflare Pages の公開 URL でタイトル画面が見られる
+      → https://typingsuite.saito-kodomopg.workers.dev
+      → 追加確認：ページ内容を変更して push → 公開URLに反映されることを確認済み
+- [x] Supabase クライアントが初期化でき、簡単な呼び出し（例：空のテーブルへの SELECT）が
       エラーなく返ることを確認できる
-- [ ] Supabase の接続情報が `.env`（git 管理外）に置かれ、リポジトリにコミットされていない
+- [x] Supabase の接続情報が `.env`（git 管理外）に置かれ、リポジトリにコミットされていない
 
 ## やらないこと（スコープ外）
 
