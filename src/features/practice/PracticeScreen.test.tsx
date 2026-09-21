@@ -37,4 +37,13 @@ describe('PracticeScreen', () => {
 
     expect(screen.getByText('結果', { selector: 'h3' })).toBeInTheDocument()
   })
+
+  it('セレクトボックスで課題を切り替えられる', () => {
+    render(<PracticeScreen />)
+    const select = screen.getByRole('combobox', { name: '課題を選ぶ' })
+
+    fireEvent.change(select, { target: { value: 'touch-type-dk' } })
+
+    expect(screen.getByText('dkdk')).toBeInTheDocument()
+  })
 })

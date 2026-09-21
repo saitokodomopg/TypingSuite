@@ -112,9 +112,11 @@ export type TypingTask = {
 
 1. `src/tasks/自分の課題名/` を作る
 2. `TypingTask` を満たすオブジェクトを書く
-3. registry に1行追加する
+3. `src/tasks/index.ts` に登録用のimportを1行追加する
 
 他人のファイルを触らずに済むため、並行して作業できる。
+登録した課題は `PracticeScreen` のセレクトボックスに自動で表示され、選んで試せる。
+生徒向けの課題メニュー・手順の詳細は `src/tasks/README.md` を参照。
 
 ## 認証の方針
 

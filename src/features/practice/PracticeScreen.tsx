@@ -2,16 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { JudgeOutcome, JudgeState } from '../../core/engine/judge.ts'
 import { createJudgeState, judgeKey } from '../../core/engine/judge.ts'
 import { calculateSession } from '../../core/engine/score.ts'
-import { get } from '../../core/registry/registry.ts'
+import { get, list } from '../../core/registry/registry.ts'
 import type { Challenge } from '../../core/types/challenge.ts'
 import type { Session } from '../../core/types/session.ts'
-import '../../tasks/touch-type/index.ts'
-
-const TASK_ID = 'touch-type-fj'
+import '../../tasks/index.ts'
 
 export function PracticeScreen() {
-  const task = get(TASK_ID)
-  const [challenge] = useState<Challenge | undefined>(() => task?.generate())
+  const tasks = list()
+  const [taskId, setTaskId] = useState<string>(() => tasks[0]?.id ?? '')
+  const task = get(taskId)
+  const [challenge, setChallenge] = useState<Challenge | undefined>(() => task?.generate())
   const [judgeState, setJudgeState] = useState<JudgeState>(createJudgeState)
   const [lastOutcome, setLastOutcome] = useState<JudgeOutcome | null>(null)
   const [session, setSession] = useState<Session | null>(null)
@@ -20,6 +20,16 @@ export function PracticeScreen() {
 
   useEffect(() => {
     areaRef.current?.focus()
+  }, [taskId])
+
+  const handleTaskChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextId = event.target.value
+    setTaskId(nextId)
+    setChallenge(get(nextId)?.generate())
+    setJudgeState(createJudgeState())
+    setLastOutcome(null)
+    setSession(null)
+    startedAtRef.current = null
   }, [])
 
   const handleKeyDown = useCallback(
@@ -56,6 +66,16 @@ export function PracticeScreen() {
 
   return (
     <section>
+      <label>
+        課題を選ぶ：
+        <select aria-label="課題を選ぶ" value={taskId} onChange={handleTaskChange}>
+          {tasks.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </label>
       <h2>{task.label}</h2>
       <p>{challenge.displayText}</p>
       <div
