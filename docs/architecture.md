@@ -15,7 +15,7 @@
 | グラフ描画 | Recharts | React 向けで記述量が少ない。推移グラフが主用途 |
 | テスト | Vitest | Vite と同じ仕組みで動くため追加設定がほぼ不要 |
 | lint / formatter | ESLint + Prettier | 書き方の差を自動で吸収する。複数人開発の前提 |
-| ホスティング | Cloudflare Pages | git push で自動公開。ブランチごとにプレビュー URL が出るため、作った本人が見せられる |
+| ホスティング | Cloudflare Workers（Static Assets） | wrangler.jsonc で `dist` を配信。git push で自動公開されるため、作った本人が見せられる |
 
 **却下した選択肢**
 
