@@ -12,11 +12,19 @@
       "Bash(tail:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Read(./.env.example)",
+      "Edit(./.env.example)"
     ],
     "deny": [
       "Read(./.env)",
-      "Read(./.env.*)",
+      "Read(./.env.local)",
+      "Read(./.env.development)",
+      "Read(./.env.development.local)",
+      "Read(./.env.production)",
+      "Read(./.env.production.local)",
+      "Read(./.env.test)",
+      "Read(./.env.test.local)",
       "Read(./**/secrets/**)",
       "Bash(git push --force:*)",
       "Bash(git reset --hard:*)"
