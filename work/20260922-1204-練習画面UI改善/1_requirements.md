@@ -22,9 +22,11 @@
       （入力途中・結果表示中のどちらから押しても、進捗と結果表示がリセットされる）
 - [x] `npm run test` / `npm run typecheck` / `npm run lint` がすべてエラーなしで通る
 - [x] `npm run dev` でブラウザから動作確認する（ユーザーが確認済み）
-- [ ] `wrapup` 後、このブランチを PR で `main` にマージする
-- [ ] `main` への反映後、Cloudflare Pages への自動デプロイが完了し、本番URLで動作確認する
-      （`main` への push で自動デプロイされる。手動デプロイ操作はしない）
+- [x] `wrapup` 後、このブランチを PR で `main` にマージする（PR #3）
+- [x] `main` への反映後、Cloudflare Pages への自動デプロイが完了し、本番URLで動作確認する
+      （Workers Builds のチェックが success。本番JSバンドルに新実装の文字列
+      （リトライ・課題を選ぶ・task-button等）が含まれることを確認。
+      本番URL: https://typingsuite.saito-kodomopg.workers.dev/ を `docs/architecture.md` に追記）
 
 ## やらないこと（スコープ外）
 
