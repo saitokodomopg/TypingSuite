@@ -22,14 +22,21 @@ export function PracticeScreen() {
     areaRef.current?.focus()
   }, [taskId])
 
-  const handleTaskChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    const nextId = event.target.value
+  const handleTaskSelect = useCallback((nextId: string) => {
     setTaskId(nextId)
     setChallenge(get(nextId)?.generate())
     setJudgeState(createJudgeState())
     setLastOutcome(null)
     setSession(null)
     startedAtRef.current = null
+  }, [])
+
+  const handleRetry = useCallback(() => {
+    setJudgeState(createJudgeState())
+    setLastOutcome(null)
+    setSession(null)
+    startedAtRef.current = null
+    areaRef.current?.focus()
   }, [])
 
   const handleKeyDown = useCallback(
@@ -66,18 +73,25 @@ export function PracticeScreen() {
 
   return (
     <section>
-      <label>
-        課題を選ぶ：
-        <select aria-label="課題を選ぶ" value={taskId} onChange={handleTaskChange}>
-          {tasks.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div role="group" aria-label="課題を選ぶ">
+        <p>課題を選ぶ：</p>
+        {tasks.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            className="task-button"
+            aria-pressed={t.id === taskId}
+            onClick={() => handleTaskSelect(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
       <h2>{task.label}</h2>
       <p>{challenge.displayText}</p>
+      <button type="button" onClick={handleRetry}>
+        リトライ
+      </button>
       <div
         ref={areaRef}
         role="application"
@@ -86,8 +100,10 @@ export function PracticeScreen() {
         onKeyDown={handleKeyDown}
       >
         <p data-testid="progress">
-          {completed}
-          <strong>{current}</strong>
+          <span data-testid="typed-text">{completed}</span>
+          <strong data-testid="current-text" className="current-text">
+            {current}
+          </strong>
         </p>
         {lastOutcome === 'miss' && <p role="alert">ミス</p>}
       </div>

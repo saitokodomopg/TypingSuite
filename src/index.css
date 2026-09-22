@@ -10,3 +10,12 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.current-text {
+  color: gray;
+}
+
+.task-button[aria-pressed='true'] {
+  font-weight: bold;
+  outline: 2px solid currentColor;
+}
