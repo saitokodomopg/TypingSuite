@@ -7,6 +7,6 @@ describe('tasks/index', () => {
     const ids = list().map((task) => task.id)
 
     expect(ids).toContain('touch-type-fj')
-    expect(ids).toContain('touch-type-dk')
+    expect(ids).toContain('home-position-basic')
   })
 })
