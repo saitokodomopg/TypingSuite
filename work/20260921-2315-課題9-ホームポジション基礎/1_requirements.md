@@ -24,12 +24,12 @@
 
 ## 受け入れ条件
 
-- [ ] `src/tasks/home-position-basic/index.ts` が3パターン以上の出題を返す
-- [ ] 出題される文字がホームポジション8キー（`a s d f j k l ;`）のみで構成されている
-- [ ] `src/tasks/index.ts` に登録され、`npm run dev` のセレクトボックスに表示される
-- [ ] 練習画面で3パターンとも最後まで打てることを目視確認する
-- [ ] `npm run test` / `npm run typecheck` / `npm run lint` がエラーなしで通る
-- [ ] ユーザー自身がブラウザ（`npm run dev`）で実際に操作し、動作を確認する
+- [x] `src/tasks/home-position-basic/index.ts` が3パターン以上の出題を返す
+- [x] 出題される文字がホームポジション8キー（`a s d f j k l ;`）のみで構成されている
+- [x] `src/tasks/index.ts` に登録され、`npm run dev` のセレクトボックスに表示される
+- [x] 練習画面で3パターンとも最後まで打てることを目視確認する
+- [x] `npm run test` / `npm run typecheck` / `npm run lint` がエラーなしで通る
+- [x] ユーザー自身がブラウザ（`npm run dev`）で実際に操作し、動作を確認する
 
 ## やらないこと（スコープ外）
 
