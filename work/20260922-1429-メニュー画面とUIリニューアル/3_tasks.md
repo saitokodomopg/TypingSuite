@@ -64,8 +64,11 @@
       - 画面内の課題切り替えボタンで別の課題のURLに遷移し、練習が続けられることを確認する
       - メニュー・練習画面ともに、案Bの見た目（カード・色分け・進捗リング・アイコン等）になっていることを確認する
 
-- [ ] PR を作成し `main` にマージする
+- [x] PR を作成し `main` にマージする
 - [ ] `main` への反映後、Cloudflare Pages の自動デプロイ完了を本番URLで確認する
+      - 本番確認で `/practice/:taskId` への直リンクが404になる不具合を発見（Cloudflare Workers
+        Static AssetsにSPAフォールバック設定がなかったため）。`wrangler.jsonc` に
+        `not_found_handling: "single-page-application"` を追加して修正、別PRで対応中
 
 - [ ] ラップアップ（`/wrapup` を実行する）
 
