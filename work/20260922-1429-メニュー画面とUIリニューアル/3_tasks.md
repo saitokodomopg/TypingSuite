@@ -65,12 +65,13 @@
       - メニュー・練習画面ともに、案Bの見た目（カード・色分け・進捗リング・アイコン等）になっていることを確認する
 
 - [x] PR を作成し `main` にマージする
-- [ ] `main` への反映後、Cloudflare Pages の自動デプロイ完了を本番URLで確認する
+- [x] `main` への反映後、Cloudflare Pages の自動デプロイ完了を本番URLで確認する
       - 本番確認で `/practice/:taskId` への直リンクが404になる不具合を発見（Cloudflare Workers
         Static AssetsにSPAフォールバック設定がなかったため）。`wrangler.jsonc` に
-        `not_found_handling: "single-page-application"` を追加して修正、別PRで対応中
+        `not_found_handling: "single-page-application"` を追加する修正PR(#6)で対応し、マージ後に
+        本番URLで直リンク・存在しないtaskIdともに200で正しく開くことを確認した
 
-- [ ] ラップアップ（`/wrapup` を実行する）
+- [x] ラップアップ（`/wrapup` を実行する）
 
 ## 品質チェック
 
