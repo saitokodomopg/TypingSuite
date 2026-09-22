@@ -26,9 +26,11 @@
 - [x] `npm run dev` を起動し、3点とも実際のブラウザ操作で確認する（ユーザーが確認済み）
 - [x] `docs/known-issues.md` No.1（`touch-type-dk` ダミー課題）は今回スコープ外のため触らない
       （課題選択のボタン化で見た目には影響するが削除はしない）
-- [ ] PR を作成し `main` にマージする
-- [ ] `main` への反映後、Cloudflare Pages の自動デプロイ完了を本番URLで確認する
-- [ ] ラップアップ（`/wrapup` を実行する）
+- [x] PR を作成し `main` にマージする（PR #3、ブランチは削除済み）
+- [x] `main` への反映後、Cloudflare Pages の自動デプロイ完了を本番URLで確認する
+      （Workers Builds チェック success。本番JSバンドルに新実装の文字列が
+      含まれることを確認。旧実装の `untyped-text` は0件で残っていないことも確認）
+- [x] ラップアップ（`/wrapup` を実行する）
 
 ## 品質チェック
 
