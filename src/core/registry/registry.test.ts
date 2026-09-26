@@ -39,3 +39,22 @@ describe('registry', () => {
     expect(() => register(dummyTask('registry-test-duplicate'))).toThrow()
   })
 })
+
+describe('registry（下位互換）', () => {
+  it('endless を持たない課題（id・label・generate だけ）を登録・取得できる', () => {
+    const task: TypingTask = {
+      id: 'registry-test-no-endless',
+      label: 'endless なし',
+      generate: () => ({
+        displayText: 'f',
+        units: [{ display: 'f', accepted: ['f'] }],
+      }),
+    }
+    register(task)
+
+    const found = get('registry-test-no-endless')
+    expect(found).toBe(task)
+    expect(found?.endless).toBeUndefined()
+    expect(found?.generate().displayText).toBe('f')
+  })
+})

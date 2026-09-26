@@ -27,7 +27,7 @@ describe('MenuScreen', () => {
       screen.getByRole('button', { name: 'タッチタイピング：ホームポジション(F/J)' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'ホームポジション基礎（A S D F / J K L ;）' }),
+      screen.getByRole('button', { name: 'ホームポジション練習（時間制）' }),
     ).toBeInTheDocument()
   })
 
