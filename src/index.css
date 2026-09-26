@@ -9,6 +9,12 @@
   --warn-soft: #fcefd1;
   --border: #e7e1d6;
   --card-bg: #ffffff;
+  /* 指ごとのキーの色（左右で同じ指は同じ色） */
+  --finger-pinky: #f6dde3;
+  --finger-ring: #fbe8cf;
+  --finger-middle: #e2efd6;
+  --finger-index: #dbe8f6;
+  --finger-thumb: #ece6f4;
   --font-heading: 'Zen Maru Gothic', system-ui, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Consolas', monospace;
 }
@@ -204,6 +210,11 @@ body {
   font-family: var(--font-mono);
   font-size: 1.6rem;
   letter-spacing: 0.05em;
+  white-space: pre-wrap;
+}
+
+.rest-text {
+  color: var(--muted);
 }
 
 .typed-text {
@@ -217,29 +228,132 @@ body {
   padding: 0 2px;
 }
 
+.key-hint-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.key-hint-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .key-hint-row {
   display: flex;
-  gap: 6px;
+  gap: 4px;
+}
+
+/* 実物のキーボードのように段ごとに少しずつ右へずらす */
+.key-hint-row-1 {
+  padding-left: 12px;
+}
+
+.key-hint-row-2 {
+  padding-left: 28px;
+}
+
+.key-hint-row-space {
+  justify-content: center;
 }
 
 .key-hint {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   border: 1px solid var(--border);
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--ink);
+}
+
+.key-hint-pinky {
+  background: var(--finger-pinky);
+}
+
+.key-hint-ring {
+  background: var(--finger-ring);
+}
+
+.key-hint-middle {
+  background: var(--finger-middle);
+}
+
+.key-hint-index {
+  background: var(--finger-index);
+}
+
+.key-hint-thumb {
+  background: var(--finger-thumb);
+  width: 200px;
+  font-family: var(--font-heading);
+}
+
+.key-hint-unavailable {
+  opacity: 0.3;
 }
 
 .key-hint-active {
-  background: var(--warn-soft);
-  border-color: var(--warn);
-  color: var(--ink);
+  border: 2px solid var(--warn);
+  box-shadow: 0 0 0 3px var(--warn-soft);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.key-hint-finger {
+  margin: 0;
   font-weight: 600;
+  color: var(--ink);
+}
+
+.duration-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.endless-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.endless-remaining {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.endless-stage {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stage-notice {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.endless-finished {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .result-card {

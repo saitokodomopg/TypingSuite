@@ -77,3 +77,19 @@ export function judgeKey(
     outcome: unitIndex >= units.length ? 'challengeComplete' : 'unitComplete',
   }
 }
+
+// 2つの判定状態の打鍵数・正打数・完了ユニット数・ミスを足し合わせる。
+// 時間制の練習で、行をまたいだ合計を出すのに使う
+export function mergeJudgeStates(a: JudgeState, b: JudgeState): JudgeState {
+  const keyMisses = { ...a.keyMisses }
+  for (const [key, count] of Object.entries(b.keyMisses)) {
+    keyMisses[key] = (keyMisses[key] ?? 0) + count
+  }
+  return {
+    unitIndex: a.unitIndex + b.unitIndex,
+    buffer: '',
+    keystrokes: a.keystrokes + b.keystrokes,
+    correctKeystrokes: a.correctKeystrokes + b.correctKeystrokes,
+    keyMisses,
+  }
+}

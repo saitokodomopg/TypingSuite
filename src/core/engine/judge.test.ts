@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ChallengeUnit } from '../types/challenge.ts'
 import { createJudgeState, isChallengeComplete, judgeKey } from './judge.ts'
+import { mergeJudgeStates } from './judge.ts'
 
 const shiUnit: ChallengeUnit = { display: 'し', accepted: ['shi', 'si'] }
 const taUnit: ChallengeUnit = { display: 'た', accepted: ['ta'] }
@@ -59,5 +60,39 @@ describe('judgeKey', () => {
     let result = judgeKey(units, createJudgeState(), 't')
     result = judgeKey(units, result.state, 'a')
     expect(() => judgeKey(units, result.state, 'a')).toThrow()
+  })
+})
+
+describe('mergeJudgeStates', () => {
+  it('打鍵数・正打数・完了ユニット数・ミスを足し合わせる', () => {
+    const a = {
+      ...createJudgeState(),
+      unitIndex: 3,
+      keystrokes: 5,
+      correctKeystrokes: 3,
+      keyMisses: { x: 1, y: 1 },
+    }
+    const b = {
+      ...createJudgeState(),
+      unitIndex: 2,
+      buffer: 's',
+      keystrokes: 4,
+      correctKeystrokes: 3,
+      keyMisses: { x: 1 },
+    }
+
+    expect(mergeJudgeStates(a, b)).toEqual({
+      unitIndex: 5,
+      buffer: '',
+      keystrokes: 9,
+      correctKeystrokes: 6,
+      keyMisses: { x: 2, y: 1 },
+    })
+  })
+
+  it('元の状態を書き換えない', () => {
+    const a = { ...createJudgeState(), keyMisses: { x: 1 } }
+    mergeJudgeStates(a, { ...createJudgeState(), keyMisses: { x: 1 } })
+    expect(a.keyMisses).toEqual({ x: 1 })
   })
 })
